@@ -194,7 +194,3 @@ notebooks/
 
 - **PrimeKG**: Chandak et al. (2023). "Building a knowledge graph to enable precision medicine." *Scientific Data*.
 - **Graph RAG Survey**: Peng et al. (2024). "Graph Retrieval-Augmented Generation: A Survey." arXiv:2408.08921.
-
-## License
-
-MIT License - See LICENSE file for details.
