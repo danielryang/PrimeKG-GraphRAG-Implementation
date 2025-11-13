@@ -4,32 +4,32 @@ Graph-based Retrieval-Augmented Generation system for biomedical research using 
 
 ## Research Impact
 
-**Core Contribution**: Implements interpretable, evidence-based biomedical question answering through structured graph reasoning rather than black-box retrieval.
+**Core Contribution**: Leverages PrimeKG, a curated biomedical knowledge graph with 6.48M edges and 129K entities, to enable interpretable, evidence-based question answering through structured graph reasoning with full provenance tracking.
 
 **Key Achievements**:
-- 95% accuracy in biomedical entity recognition across drugs, diseases, genes, and proteins
-- Agent-based graph traversal with LLM-guided exploration decisions and early stopping optimization
-- Full reasoning transparency with biological pathway clustering and evidence chain construction
-- Comprehensive evaluation framework with standardized benchmarks for reproducible research
+- 95% accuracy in biomedical entity recognition using domain-specific NER models (en_core_sci_md)
+- Agent-based graph traversal where LLM makes explicit reasoning decisions about which entities and relationships to explore
+- Complete audit trail from PrimeKG sources through biological pathway clustering to final evidence chains
+- Standardized evaluation framework with accuracy, consistency, coverage, and quality metrics for reproducible benchmarking
 
-**Novel Approaches**:
-- Multi-stage entity extraction cascade: biomedical NER → pattern matching → semantic search
-- Intelligent graph exploration with controlled fallback expansion preventing exponential blow-up
-- Biological hierarchy organization for pathway-level insights
-- Dual generation strategy (LLM + template fallback) with confidence scoring
+**Technical Innovations**:
+- Multi-stage entity grounding: biomedical NER → lexical matching → semantic search against PrimeKG ontology
+- Intelligent exploration with heuristic pre-filtering and LLM-guided borderline decisions, preventing exponential graph explosion through relevance-based early stopping
+- Biological context organization: pathway clustering via agglomerative methods, hierarchy construction across cellular/molecular/phenotype levels
+- Resilient generation: Dual strategy (LLM API + template-based fallback) ensures responses even without external API dependencies, with multi-factor confidence scoring
 
 ## System Architecture
 
-Four-stage pipeline:
+Four-stage pipeline operating over PrimeKG's curated biomedical ontology (20+ data sources including DrugBank, DISEASES, GO, Reactome):
 
-1. **Query Processing**: Biomedical entity extraction and intent classification
-2. **Graph Retrieval**: Agent-based exploration of PrimeKG with relevance-based stopping
-3. **Context Organization**: Biological hierarchy construction and pathway clustering
-4. **Response Generation**: Natural language synthesis with evidence provenance
+1. **Query Processing**: Biomedical entity extraction using trained NER models and intent classification across 6 query types (treatment, mechanism, side effects, gene-disease, interactions, pathways)
+2. **Graph Retrieval**: Agent-based exploration where LLM evaluates borderline entities and decides traversal paths, with early stopping when relevance thresholds are met (prevents runaway expansion to 1000+ entities)
+3. **Context Organization**: Biological hierarchy construction (cellular components, molecular functions, phenotypes, pathways) and ML-based pathway clustering to identify mechanistic themes
+4. **Response Generation**: Natural language synthesis with complete evidence provenance linking each claim back to PrimeKG source relationships
 
 **Backend Support**:
-- Production: Neo4j (sub-second queries, millions of entities)
-- Research: PyKEEN + NetworkX (in-memory, 350MB cached dataset)
+- Production: Neo4j with Cypher optimization (sub-second queries, scales to millions of entities, supports distributed deployment)
+- Research: PyKEEN + NetworkX (in-memory graph processing, 350MB cached dataset, no external dependencies)
 
 ## Installation
 
@@ -107,18 +107,20 @@ The notebook is particularly useful for:
 
 ## Evaluation
 
-Run comprehensive benchmarks:
+Comprehensive evaluation framework with ground-truth benchmarks and quantitative metrics:
 
 ```bash
 python scripts/run_evaluation.py --dataset data/benchmark_dataset.json --output results/evaluation.json
 ```
 
-**Metrics**:
-- Accuracy: Entity extraction, type classification, relationship retrieval
-- Biological consistency: Pathway coherence, type consistency
-- Performance: Query processing, retrieval, generation latency
-- Coverage: Retrieved entities/relationships vs expected
-- Quality: Confidence scoring, reasoning chain quality
+**Metrics Across Multiple Dimensions**:
+- **Accuracy**: Entity extraction correctness, entity type classification, relationship retrieval against known PrimeKG edges, answer accuracy vs ground truth
+- **Biological Consistency**: Pathway coherence (entities belong to related pathways), entity type consistency (no conflicting classifications)
+- **Performance**: Per-stage latency (query processing, retrieval, organization, generation), end-to-end response time
+- **Coverage**: Retrieved entities/relationships vs expected (measures completeness), coverage score (finding all relevant evidence)
+- **Quality**: Multi-factor confidence scoring, reasoning chain quality (step coherence), evidence quality (source diversity and relevance)
+
+**Ground Truth Dataset**: Includes 5+ benchmark queries with expected entities, relationships, and answers for reproducible evaluation.
 
 ## Project Structure
 
