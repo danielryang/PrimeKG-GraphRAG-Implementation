@@ -4,7 +4,7 @@ Graph-based Retrieval-Augmented Generation for biomedical question answering usi
 
 ## Features
 
-- **Domain-Specific NER**: 95% accuracy with biomedical models (en_core_sci_md)
+- **Domain-Specific NER**: 95% accuracy with biomedical models (spaCy en_core_sci_md)
 - **Agent-Based Exploration**: LLM-guided graph traversal with early stopping to prevent exponential expansion
 - **Biological Organization**: Pathway clustering and hierarchy construction (cellular/molecular/phenotype)
 - **Full Provenance**: Complete audit trail linking answers to PrimeKG source relationships
@@ -95,7 +95,7 @@ python scripts/run_evaluation.py --dataset data/benchmark_dataset.json --output 
 - **Coverage**: Retrieved vs expected entities/relationships
 - **Quality**: Confidence scoring, reasoning chain coherence, evidence diversity
 
-Includes ground-truth benchmark dataset with 5+ validated queries.
+Includes benchmark dataset with 5+ validated queries.
 
 ## Configuration
 
@@ -150,42 +150,20 @@ scripts/
 
 notebooks/
 └── primekg_graphrag_biomedical_qa_interface.ipynb  # Interactive demo
+
 ```
 
-## Development
+## Research 
 
-```bash
-# Run tests
-pytest tests/
+**Contribution**: Interpretable biomedical QA through structured graph reasoning with full provenance tracking over curated biomedical knowledge.
 
-# Format code
-black src/ tests/
-
-# Type checking
-mypy src/
-```
-
-## Research Impact
-
-**Core Contribution**: Interpretable biomedical QA through structured graph reasoning with full provenance tracking over curated biomedical knowledge.
-
-**Key Innovations**:
+**Features**:
 - Multi-stage entity grounding against PrimeKG ontology
 - Intelligent exploration with heuristic pre-filtering and LLM borderline decisions
 - Biological context organization via ML-based pathway clustering
 - Resilient dual-generation strategy with multi-factor confidence scoring
 - Standardized evaluation framework for reproducible benchmarking
 
-## Citation
-
-```bibtex
-@software{primekg_graphrag,
-  title={PrimeKG GraphRAG: Graph-based Retrieval-Augmented Generation for Biomedical Question Answering},
-  author={Your Name},
-  year={2025},
-  url={https://github.com/yourusername/PrimeKG-GraphRAG-Implementation}
-}
-```
 
 ## References
 
