@@ -1,67 +1,43 @@
-# PrimeKG GraphRAG for Biomedical Question Answering
+# PrimeKG GraphRAG
 
-Graph-based Retrieval-Augmented Generation system for biomedical research using PrimeKG knowledge graph.
+Graph-based Retrieval-Augmented Generation for biomedical question answering using PrimeKG knowledge graph (6.48M edges, 129K entities, 20+ curated sources).
 
-## Research Impact
+## Features
 
-**Core Contribution**: Leverages PrimeKG, a curated biomedical knowledge graph with 6.48M edges and 129K entities, to enable interpretable, evidence-based question answering through structured graph reasoning with full provenance tracking.
-
-**Key Achievements**:
-- 95% accuracy in biomedical entity recognition using domain-specific NER models (en_core_sci_md)
-- Agent-based graph traversal where LLM makes explicit reasoning decisions about which entities and relationships to explore
-- Complete audit trail from PrimeKG sources through biological pathway clustering to final evidence chains
-- Standardized evaluation framework with accuracy, consistency, coverage, and quality metrics for reproducible benchmarking
-
-**Technical Innovations**:
-- Multi-stage entity grounding: biomedical NER → lexical matching → semantic search against PrimeKG ontology
-- Intelligent exploration with heuristic pre-filtering and LLM-guided borderline decisions, preventing exponential graph explosion through relevance-based early stopping
-- Biological context organization: pathway clustering via agglomerative methods, hierarchy construction across cellular/molecular/phenotype levels
-- Resilient generation: Dual strategy (LLM API + template-based fallback) ensures responses even without external API dependencies, with multi-factor confidence scoring
-
-## System Architecture
-
-Four-stage pipeline operating over PrimeKG's curated biomedical ontology (20+ data sources including DrugBank, DISEASES, GO, Reactome):
-
-1. **Query Processing**: Biomedical entity extraction using trained NER models and intent classification across 6 query types (treatment, mechanism, side effects, gene-disease, interactions, pathways)
-2. **Graph Retrieval**: Agent-based exploration where LLM evaluates borderline entities and decides traversal paths, with early stopping when relevance thresholds are met (prevents runaway expansion to 1000+ entities)
-3. **Context Organization**: Biological hierarchy construction (cellular components, molecular functions, phenotypes, pathways) and ML-based pathway clustering to identify mechanistic themes
-4. **Response Generation**: Natural language synthesis with complete evidence provenance linking each claim back to PrimeKG source relationships
-
-**Backend Support**:
-- Production: Neo4j with Cypher optimization (sub-second queries, scales to millions of entities, supports distributed deployment)
-- Research: PyKEEN + NetworkX (in-memory graph processing, 350MB cached dataset, no external dependencies)
-
-## Installation
-
-```bash
-# Clone repository
-git clone https://github.com/yourusername/PrimeKG-GraphRAG-Implementation.git
-cd PrimeKG-GraphRAG-Implementation
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install biomedical NER model
-python scripts/install_spacy_biomedical.py
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your API keys if using LLM generation
-```
+- **Domain-Specific NER**: 95% accuracy with biomedical models (en_core_sci_md)
+- **Agent-Based Exploration**: LLM-guided graph traversal with early stopping to prevent exponential expansion
+- **Biological Organization**: Pathway clustering and hierarchy construction (cellular/molecular/phenotype)
+- **Full Provenance**: Complete audit trail linking answers to PrimeKG source relationships
+- **Dual Backends**: Neo4j (production) or PyKEEN (research, no external dependencies)
+- **Comprehensive Evaluation**: Standardized benchmarks with accuracy, consistency, coverage, and quality metrics
 
 ## Quick Start
 
+### Installation
+
+```bash
+git clone https://github.com/yourusername/PrimeKG-GraphRAG-Implementation.git
+cd PrimeKG-GraphRAG-Implementation
+
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+python scripts/install_spacy_biomedical.py
+
+cp .env.example .env  # Edit with your API keys if using LLM generation
+```
+
+### Basic Usage
+
+**Python API:**
 ```python
 from src.graph_data_source import PrimeKGDataSource
 from src.retriever import GraphRetriever
 from src.organizer import PrimeKGOrganizer
 from src.generator import PrimeKGGenerator
 
-# Initialize components
+# Initialize
 data_source = PrimeKGDataSource()
 data_source.load()
 
@@ -69,7 +45,7 @@ retriever = GraphRetriever(data_source)
 organizer = PrimeKGOrganizer(data_source)
 generator = PrimeKGGenerator(data_source)
 
-# Query the system
+# Query
 query = "How does metformin treat type 2 diabetes?"
 retrieval_result = retriever.retrieve(query)
 context = retriever.to_retrieved_context(retrieval_result)
@@ -79,111 +55,128 @@ response = generator.generate_response(query, organized)
 print(response.answer)
 ```
 
-**CLI Interface**:
+**CLI:**
 ```bash
 python primekg_graphrag.py "What are the side effects of aspirin?"
 ```
 
-## Interactive Notebook
-
-The `notebooks/primekg_graphrag_biomedical_qa_interface.ipynb` notebook provides an interactive demonstration of the complete pipeline.
-
-**Features**:
-- Step-by-step pipeline execution with visualization
-- Real-time exploration of retrieval results, pathway clustering, and evidence chains
-- Performance metrics and confidence scoring analysis
-- Adjustable parameters for experimentation (max entities, hops, similarity thresholds)
-
-**Usage**:
+**Jupyter Notebook:**
 ```bash
 jupyter notebook notebooks/primekg_graphrag_biomedical_qa_interface.ipynb
 ```
 
-The notebook is particularly useful for:
-- Understanding how each pipeline stage transforms data
-- Debugging entity extraction and relationship retrieval
-- Analyzing biological pathway organization
-- Experimenting with different query types and parameters
+Interactive demo with visualization, metrics analysis, and adjustable parameters.
+
+## Architecture
+
+Four-stage pipeline over PrimeKG (DrugBank, DISEASES, GO, Reactome, etc.):
+
+| Stage | Function | Key Techniques |
+|-------|----------|----------------|
+| **Query Processing** | Entity extraction & intent classification | Biomedical NER → lexical → semantic search; 6 query types |
+| **Graph Retrieval** | Agent-based exploration | LLM-guided decisions, heuristic pre-filtering, relevance-based early stopping |
+| **Context Organization** | Biological structuring | Pathway clustering (agglomerative), hierarchy construction (cellular/molecular/phenotype) |
+| **Response Generation** | NL synthesis with provenance | Dual strategy (LLM + template fallback), multi-factor confidence scoring |
+
+**Backend Options:**
+- **Neo4j**: Cypher-optimized, sub-second queries, distributed scaling
+- **PyKEEN + NetworkX**: In-memory, 350MB cached, zero external dependencies
 
 ## Evaluation
-
-Comprehensive evaluation framework with ground-truth benchmarks and quantitative metrics:
 
 ```bash
 python scripts/run_evaluation.py --dataset data/benchmark_dataset.json --output results/evaluation.json
 ```
 
-**Metrics Across Multiple Dimensions**:
-- **Accuracy**: Entity extraction correctness, entity type classification, relationship retrieval against known PrimeKG edges, answer accuracy vs ground truth
-- **Biological Consistency**: Pathway coherence (entities belong to related pathways), entity type consistency (no conflicting classifications)
-- **Performance**: Per-stage latency (query processing, retrieval, organization, generation), end-to-end response time
-- **Coverage**: Retrieved entities/relationships vs expected (measures completeness), coverage score (finding all relevant evidence)
-- **Quality**: Multi-factor confidence scoring, reasoning chain quality (step coherence), evidence quality (source diversity and relevance)
+**Metrics:**
+- **Accuracy**: Entity extraction, type classification, relationship retrieval, answer correctness
+- **Biological Consistency**: Pathway coherence, entity type consistency
+- **Performance**: Per-stage and end-to-end latency
+- **Coverage**: Retrieved vs expected entities/relationships
+- **Quality**: Confidence scoring, reasoning chain coherence, evidence diversity
 
-**Ground Truth Dataset**: Includes 5+ benchmark queries with expected entities, relationships, and answers for reproducible evaluation.
-
-## Project Structure
-
-```
-src/
-├── graph_data_source.py    # PrimeKG data access layer (Neo4j/PyKEEN)
-├── retriever.py             # Agent-based graph exploration
-├── organizer.py             # Biological hierarchy construction
-├── generator.py             # Natural language response generation
-├── evaluator.py             # Comprehensive evaluation framework
-└── llm_client.py            # LLM API integration with async batching
-
-scripts/
-├── run_evaluation.py                # Benchmark evaluation runner
-└── install_spacy_biomedical.py      # Biomedical NER model installer
-
-notebooks/
-└── primekg_graphrag_biomedical_qa_interface.ipynb  # Interactive demo
-```
+Includes ground-truth benchmark dataset with 5+ validated queries.
 
 ## Configuration
 
-Key environment variables in `.env`:
+Key `.env` variables:
 
 ```bash
-# Data backend
-NEO4J_URI=bolt://localhost:7687          # Optional: Production backend
+# Backend (optional, defaults to PyKEEN if not provided)
+NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=yourpassword
 
 # Processing limits
-MAX_ENTITIES=50                          # Entity retrieval limit
-MAX_RELATIONSHIPS=100                    # Relationship retrieval limit
-MAX_HOPS=2                              # Graph traversal depth
+MAX_ENTITIES=50
+MAX_RELATIONSHIPS=100
+MAX_HOPS=2
 
-# LLM APIs (optional, for generation)
+# LLM APIs (optional, uses template fallback if not provided)
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 
 # Performance tuning
-SIMILARITY_THRESHOLD=0.3                 # Semantic search threshold
-QUERY_TIMEOUT=30                         # Query timeout (seconds)
+SIMILARITY_THRESHOLD=0.3
+QUERY_TIMEOUT=30
 ```
 
-## Neo4j Production Setup
-
-For scalable production deployment:
+### Neo4j Setup (Optional)
 
 ```bash
-# Docker setup
 python setup_neo4j.py
 
 # Or manual Docker
-docker run -d \
-  --name primekg-neo4j \
+docker run -d --name primekg-neo4j \
   -p 7474:7474 -p 7687:7687 \
   -e NEO4J_AUTH=neo4j/primekg123 \
   neo4j:latest
 ```
 
-## Citation
+## Project Structure
 
-If you use this work in your research, please cite:
+```
+src/
+├── graph_data_source.py    # PrimeKG data access (Neo4j/PyKEEN)
+├── retriever.py             # Agent-based graph exploration
+├── organizer.py             # Biological hierarchy construction
+├── generator.py             # NL response generation
+├── evaluator.py             # Evaluation framework
+└── llm_client.py            # LLM API integration
+
+scripts/
+├── run_evaluation.py                # Benchmark runner
+└── install_spacy_biomedical.py      # NER model installer
+
+notebooks/
+└── primekg_graphrag_biomedical_qa_interface.ipynb  # Interactive demo
+```
+
+## Development
+
+```bash
+# Run tests
+pytest tests/
+
+# Format code
+black src/ tests/
+
+# Type checking
+mypy src/
+```
+
+## Research Impact
+
+**Core Contribution**: Interpretable biomedical QA through structured graph reasoning with full provenance tracking over curated biomedical knowledge.
+
+**Key Innovations**:
+- Multi-stage entity grounding against PrimeKG ontology
+- Intelligent exploration with heuristic pre-filtering and LLM borderline decisions
+- Biological context organization via ML-based pathway clustering
+- Resilient dual-generation strategy with multi-factor confidence scoring
+- Standardized evaluation framework for reproducible benchmarking
+
+## Citation
 
 ```bibtex
 @software{primekg_graphrag,
@@ -198,21 +191,7 @@ If you use this work in your research, please cite:
 
 - **PrimeKG**: Chandak et al. (2023). "Building a knowledge graph to enable precision medicine." *Scientific Data*.
 - **Graph RAG Survey**: Peng et al. (2024). "Graph Retrieval-Augmented Generation: A Survey." arXiv:2408.08921.
-- **Biomedical Entity Linking**: Extensive evaluation benchmarks from PMC biomedical literature.
 
 ## License
 
 MIT License - See LICENSE file for details.
-
-## Development
-
-```bash
-# Run tests
-pytest tests/
-
-# Format code
-black src/ tests/
-
-# Type checking
-mypy src/
-```
