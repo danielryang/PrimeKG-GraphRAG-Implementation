@@ -4,18 +4,18 @@ Graph-based Retrieval-Augmented Generation for biomedical question answering usi
 
 ## Features
 
-**Research Impact:**
+
 - **Curated Knowledge Graph Foundation**: Operates over PrimeKG (6.48M edges from 20+ sources including DrugBank, DISEASES, GO, Reactome) rather than extracting graphs from unstructured text, ensuring biological accuracy and eliminating hallucination from document parsing errors
 - **Interpretable Reasoning**: Agent-based exploration where LLM makes explicit, auditable decisions about which entities and relationships to explore, with complete reasoning chains explaining why each path was chosen
 - **Reproducible Evaluation**: Ground-truth benchmarks with quantitative metrics across accuracy, biological consistency, coverage, and quality dimensions, enabling systematic comparison and validation
 
-**Technical Advantages:**
-- **Biomedical Domain Specialization**: 95% entity recognition accuracy using trained scientific NER models (spaCy en_core_sci_md from scispacy) instead of general-purpose extractors, correctly identifying drugs, diseases, genes, and proteins in context
+
+- **Biomedical Domain Specialization**: Entity recognition using trained scientific NER models (spaCy en_core_sci_md from scispacy) instead of general-purpose extractors, correctly identifying drugs, diseases, genes, and proteins in context
 - **Controlled Graph Exploration**: Heuristic pre-filtering + LLM borderline evaluation prevents exponential explosion (stops at relevance thresholds instead of expanding to 1000+ irrelevant entities), solving the graph traversal scalability problem
 - **Biological Context Organization**: ML-based pathway clustering and multi-level hierarchy construction (cellular components, molecular functions, phenotypes) that understands biological relationships rather than generic community detection
 - **Full Source Provenance**: Every claim links back to specific PrimeKG relationships with original database sources (DrugBank IDs, GO terms, etc.), enabling verification and confidence assessment
-- **Zero-Dependency Operation**: Dual-generation strategy (LLM API + template fallback) and dual backends (Neo4j + PyKEEN) ensure system works in resource-constrained environments without external API calls or database servers
-- **Validated Ground Truth**: Comprehensive evaluation framework with benchmark dataset containing expected entities, relationships, and answers for reproducible performance assessment
+
+- **Validation**: Evaluation framework with benchmark dataset containing expected entities, relationships, and answers for reproducible performance assessment
 
 ## Quick Start
 
@@ -159,17 +159,36 @@ notebooks/
 
 ```
 
-## Research 
+## Research Impact
 
-**Contribution**: Interpretable biomedical QA through structured graph reasoning with full provenance tracking over curated biomedical knowledge.
+**Core Contribution**: Interpretable biomedical QA through structured graph reasoning with full provenance tracking over curated biomedical knowledge.
 
-**Features**:
+**Key Innovations**:
 - Multi-stage entity grounding against PrimeKG ontology
 - Intelligent exploration with heuristic pre-filtering and LLM borderline decisions
 - Biological context organization via ML-based pathway clustering
 - Resilient dual-generation strategy with multi-factor confidence scoring
 - Standardized evaluation framework for reproducible benchmarking
 
+## Limitations
+
+**Knowledge Graph Constraints**:
+- **Coverage Bounds**: Limited to entities and relationships present in PrimeKG; novel drugs, diseases, or recently discovered pathways not yet curated into PrimeKG cannot be retrieved
+- **Update Latency**: PrimeKG snapshot represents knowledge at time of curation; latest research findings may not be reflected until database updates
+
+**System Design Trade-offs**:
+- **Domain Specificity**: Optimized for biomedical queries; not suitable for general-domain question answering without significant architectural changes
+- **Entity Ambiguity**: Homonyms and ambiguous entity names (e.g., "insulin" as drug vs protein) may cause grounding errors despite multi-stage resolution
+- **Computational Complexity**: Agent-based exploration with LLM calls introduces latency (2-5s per query); heuristic pre-filtering partially mitigates but cannot eliminate for complex multi-hop queries
+
+**Operational Requirements**:
+- **NER Model Dependency**: Requires installation of specialized scispacy models (en_core_sci_md); system falls back to regex patterns with reduced accuracy if unavailable
+- **LLM API Costs**: Full agent-based reasoning requires LLM API access; template-based fallback provides basic functionality but loses intelligent exploration capabilities
+- **Neo4j Setup Complexity**: Production-scale deployment benefits significantly from Neo4j backend; PyKEEN fallback works but limited to single-machine memory constraints
+
+**Evaluation Scope**:
+- **Benchmark Size**: Current evaluation dataset contains 5+ validated queries; larger-scale clinical validation needed for production medical applications
+- **Ground Truth Limitations**: Expected entities/relationships manually curated; may not capture all valid biological pathways for complex mechanisms
 
 ## References
 
