@@ -178,7 +178,7 @@ notebooks/
 
 **System Design Trade-offs**:
 - **Domain Specificity**: Optimized for biomedical queries; not suitable for general-domain question answering without significant architectural changes
-- **Entity Ambiguity**: Homonyms and ambiguous entity names (e.g., "insulin" as drug vs protein) may cause grounding errors despite multi-stage resolution
+- **Entity Ambiguity**: Homonyms and ambiguous entity names (e.g., "insulin" as drug vs protein) may cause errors despite multi-stage resolution
 - **Computational Complexity**: Agent-based exploration with LLM calls introduces latency (2-5s per query); heuristic pre-filtering partially mitigates but cannot eliminate for complex multi-hop queries
 
 **Operational Requirements**:
