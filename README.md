@@ -13,7 +13,7 @@ Graph-based Retrieval-Augmented Generation for biomedical question answering usi
 - **Full Source Provenance**: Every claim links back to specific PrimeKG relationships with original database sources (DrugBank IDs, GO terms, etc.), enabling verification and confidence assessment
 - **Validation**: Evaluation framework with benchmark dataset containing expected entities, relationships, and answers for reproducible performance assessment
 
-Example usage can be found at https://github.com/danielryang/PrimeKG-GraphRAG-Implementation/blob/main/notebooks/primekg_graphrag_biomedical_qa_interface.ipynb
+Example usage can be found [here](https://github.com/danielryang/PrimeKG-GraphRAG-Implementation/blob/main/notebooks/primekg_graphrag_biomedical_qa_interface.ipynb).
 
 ## Quick Start
 
