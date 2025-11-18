@@ -7,15 +7,13 @@ Graph-based Retrieval-Augmented Generation for biomedical question answering usi
 
 - **Curated Knowledge Graph Foundation**: Operates over PrimeKG (6.48M edges from 20+ sources including DrugBank, DISEASES, GO, Reactome) rather than extracting graphs from unstructured text, ensuring biological accuracy and eliminating hallucination from document parsing errors
 - **Interpretable Reasoning**: Agent-based exploration where LLM makes explicit, auditable decisions about which entities and relationships to explore, with complete reasoning chains explaining why each path was chosen
-- **Reproducible Evaluation**: Ground-truth benchmarks with quantitative metrics across accuracy, biological consistency, coverage, and quality dimensions, enabling systematic comparison and validation
-
-
 - **Biomedical Domain Specialization**: Entity recognition using trained scientific NER models (spaCy en_core_sci_md from scispacy) instead of general-purpose extractors, correctly identifying drugs, diseases, genes, and proteins in context
 - **Controlled Graph Exploration**: Heuristic pre-filtering + LLM borderline evaluation prevents exponential explosion (stops at relevance thresholds instead of expanding to 1000+ irrelevant entities), solving the graph traversal scalability problem
 - **Biological Context Organization**: ML-based pathway clustering and multi-level hierarchy construction (cellular components, molecular functions, phenotypes) that understands biological relationships rather than generic community detection
 - **Full Source Provenance**: Every claim links back to specific PrimeKG relationships with original database sources (DrugBank IDs, GO terms, etc.), enabling verification and confidence assessment
-
 - **Validation**: Evaluation framework with benchmark dataset containing expected entities, relationships, and answers for reproducible performance assessment
+
+Example usage can be found at https://github.com/danielryang/PrimeKG-GraphRAG-Implementation/blob/main/notebooks/primekg_graphrag_biomedical_qa_interface.ipynb
 
 ## Quick Start
 
